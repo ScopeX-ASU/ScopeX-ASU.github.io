@@ -1,0 +1,15 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="900" rx="48" fill="#FAF8F5"/>
+  <circle cx="1300" cy="112" r="180" fill="#8C1D40" fill-opacity="0.12"/>
+  <circle cx="248" cy="744" r="220" fill="#67AB9F" fill-opacity="0.12"/>
+  <rect x="126" y="126" width="1348" height="648" rx="36" fill="white"/>
+  <rect x="274" y="240" width="122" height="122" rx="24" fill="#8C1D40"/>
+  <rect x="514" y="240" width="122" height="122" rx="24" fill="#0081CC"/>
+  <rect x="754" y="240" width="122" height="122" rx="24" fill="#67AB9F"/>
+  <rect x="994" y="240" width="122" height="122" rx="24" fill="#D0A95F"/>
+  <rect x="1234" y="240" width="122" height="122" rx="24" fill="#8C1D40"/>
+  <path d="M335 556C418 484 460 449 575 449C694 449 723 573 848 573C969 573 1000 447 1120 447C1233 447 1269 507 1321 556" stroke="#2F2F2F" stroke-width="20" stroke-linecap="round"/>
+  <path d="M335 626C430 553 472 523 587 523C695 523 726 633 848 633C968 633 1005 526 1115 526C1233 526 1269 576 1321 626" stroke="#0081CC" stroke-width="16" stroke-linecap="round"/>
+  <text x="164" y="706" fill="#2F2F2F" font-family="Cabin, Arial, sans-serif" font-size="86" font-weight="700">LiDAR 2.0</text>
+  <text x="164" y="772" fill="#666666" font-family="Cabin, Arial, sans-serif" font-size="34">Scalable photonic routing automation</text>
+</svg>
