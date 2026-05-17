@@ -22,10 +22,11 @@ The catalog reads summary entries from:
 To add a new project:
 
 1. Copy an existing folder such as `projects/lidar-2-0/`.
-2. Rename the folder to the new slug.
-3. Update metadata in `project.js`.
-4. Write the main content in `content.md`.
-5. Add or replace files in `assets/`.
-6. Add one summary entry to `js/projects-registry.js`.
+2. Rename the folder to `projects/NEW-PROJ-NAME/`. Your `NEW-PROJ-NAME` is the `slug`.
+3. Update metadata in `projects/NEW-PROJ-NAME/project.js`.
+4. Write the main content in the markdown file `projects/NEW-PROJ-NAME/content.md`.
+5. Add or replace files in `projects/NEW-PROJ-NAME/assets/`.
+6. register the project entry in the registry `js/projects-registry.js`.
 
-This keeps each project's detailed content local, while the shared catalog stays lightweight.
+For direct local `file://` preview, each project `index.html` contains an embedded Markdown fallback.
+Do not edit that embedded block by hand. It is generated from `content.md`.

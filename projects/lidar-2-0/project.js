@@ -1,9 +1,9 @@
 (function () {
   window.scopexProjectPage = {
-    title: "LiDAR 2.0",
-    subtitle: "Hierarchical Curvy Waveguide Routing for Large-Scale Photonic ICs",
+    title: "LiDAR 2.0: Hierarchical Curvy Waveguide Routing for Large-Scale Photonic ICs",
+    subtitle: "",
     venue: "IEEE TCAD 2025",
-    categories: ["Design Automation Flow"],
+    categories: ["Electronic-Photonic Design Automation (EPDA)"],
     topics: ["Photonic Layout", "Routing Automation"],
     techniques: ["Hierarchical Optimization", "Design Space Exploration"],
     authors: [

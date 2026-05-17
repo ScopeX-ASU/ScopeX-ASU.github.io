@@ -52,7 +52,10 @@
     if (project.citation) {
       sections +=
         '<div class="project-section project-citation" data-aos="fade-up">' +
+        '<div class="project-section-header">' +
         "<h2>Citation</h2>" +
+        '<button class="project-copy-button" type="button" data-copy-citation>Copy</button>' +
+        "</div>" +
         "<pre>" + escapeHtml(project.citation) + "</pre>" +
         "</div>";
     }
@@ -247,6 +250,214 @@
     }
   }
 
+  function localNotice(message, actionLabel) {
+    var button = actionLabel
+      ? '<div class="projects-home-actions"><button class="scopex-button scopex-button-secondary" type="button" data-load-local-markdown>' + escapeHtml(actionLabel) + "</button></div>"
+      : "";
+
+    return '<div class="project-empty project-local-notice">' + message + button + "</div>";
+  }
+
+  function normalizeRelativePath(relativePath) {
+    return (relativePath || "./content.md").replace(/^\.\//, "");
+  }
+
+  function openProjectHandleDb() {
+    return new Promise(function (resolve, reject) {
+      var request = window.indexedDB.open("scopex-project-preview", 1);
+
+      request.onupgradeneeded = function () {
+        request.result.createObjectStore("handles");
+      };
+
+      request.onsuccess = function () {
+        resolve(request.result);
+      };
+
+      request.onerror = function () {
+        reject(request.error);
+      };
+    });
+  }
+
+  function getProjectHandleKey() {
+    return "handle:" + window.location.pathname;
+  }
+
+  function loadSavedDirectoryHandle() {
+    if (!window.indexedDB) {
+      return Promise.resolve(null);
+    }
+
+    return openProjectHandleDb()
+      .then(function (db) {
+        return new Promise(function (resolve, reject) {
+          var tx = db.transaction("handles", "readonly");
+          var store = tx.objectStore("handles");
+          var request = store.get(getProjectHandleKey());
+
+          request.onsuccess = function () {
+            resolve(request.result || null);
+          };
+
+          request.onerror = function () {
+            reject(request.error);
+          };
+        });
+      })
+      .catch(function () {
+        return null;
+      });
+  }
+
+  function saveDirectoryHandle(handle) {
+    if (!window.indexedDB) {
+      return Promise.resolve();
+    }
+
+    return openProjectHandleDb()
+      .then(function (db) {
+        return new Promise(function (resolve, reject) {
+          var tx = db.transaction("handles", "readwrite");
+          var store = tx.objectStore("handles");
+          var request = store.put(handle, getProjectHandleKey());
+
+          request.onsuccess = function () {
+            resolve();
+          };
+
+          request.onerror = function () {
+            reject(request.error);
+          };
+        });
+      })
+      .catch(function () {
+        return null;
+      });
+  }
+
+  function ensureDirectoryPermission(handle) {
+    if (!handle || typeof handle.queryPermission !== "function") {
+      return Promise.resolve(false);
+    }
+
+    return handle.queryPermission({ mode: "read" })
+      .then(function (state) {
+        if (state === "granted") {
+          return true;
+        }
+
+        return handle.requestPermission({ mode: "read" }).then(function (requestedState) {
+          return requestedState === "granted";
+        });
+      })
+      .catch(function () {
+        return false;
+      });
+  }
+
+  function readFileFromDirectory(handle, relativePath) {
+    var parts = normalizeRelativePath(relativePath).split("/").filter(Boolean);
+    var current = Promise.resolve(handle);
+
+    parts.forEach(function (part, index) {
+      var isLast = index === parts.length - 1;
+
+      current = current.then(function (entry) {
+        if (isLast) {
+          return entry.getFileHandle(part).then(function (fileHandle) {
+            return fileHandle.getFile().then(function (file) {
+              return file.text();
+            });
+          });
+        }
+
+        return entry.getDirectoryHandle(part);
+      });
+    });
+
+    return current;
+  }
+
+  function renderMarkdownWithNotice(markdown, noticeHtml) {
+    markdownRoot.innerHTML = (noticeHtml || "") + renderMarkdown(markdown);
+    refreshAnimations();
+  }
+
+  function canUseFileSystemAccess() {
+    return typeof window.showDirectoryPicker === "function";
+  }
+
+  function attachCopyHandler() {
+    var copyButton = root.querySelector("[data-copy-citation]");
+
+    if (!copyButton || !project.citation) {
+      return;
+    }
+
+    copyButton.addEventListener("click", function () {
+      var originalLabel = copyButton.textContent;
+
+      function setTemporaryLabel(label) {
+        copyButton.textContent = label;
+        window.setTimeout(function () {
+          copyButton.textContent = originalLabel;
+        }, 1200);
+      }
+
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        navigator.clipboard.writeText(project.citation)
+          .then(function () {
+            setTemporaryLabel("Copied");
+          })
+          .catch(function () {
+            setTemporaryLabel("Failed");
+          });
+        return;
+      }
+
+      var textArea = document.createElement("textarea");
+      textArea.value = project.citation;
+      textArea.setAttribute("readonly", "");
+      textArea.style.position = "absolute";
+      textArea.style.left = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.select();
+
+      try {
+        document.execCommand("copy");
+        setTemporaryLabel("Copied");
+      } catch (error) {
+        setTemporaryLabel("Failed");
+      }
+
+      document.body.removeChild(textArea);
+    });
+  }
+
+  function chooseLocalProjectFolder() {
+    if (!canUseFileSystemAccess()) {
+      return Promise.reject(new Error("Local folder access is not supported in this browser."));
+    }
+
+    return window.showDirectoryPicker({ mode: "read" })
+      .then(function (handle) {
+        return saveDirectoryHandle(handle).then(function () {
+          return handle;
+        });
+      });
+  }
+
+  function loadMarkdownFromDirectoryHandle(handle) {
+    return ensureDirectoryPermission(handle).then(function (granted) {
+      if (!granted) {
+        throw new Error("Permission denied");
+      }
+
+      return readFileFromDirectory(handle, contentFile);
+    });
+  }
+
   function renderLink(label, icon, href) {
     if (!href) {
       return "";
@@ -289,6 +500,7 @@
     "</div>" +
     "</div>";
 
+  attachCopyHandler();
   refreshAnimations();
 
   var markdownRoot = root.querySelector("[data-project-markdown]");
@@ -296,9 +508,83 @@
   var embeddedMarkdown = embeddedMarkdownNode ? embeddedMarkdownNode.textContent : "";
   var contentFile = project.contentFile || "./content.md";
 
-  if (window.location.protocol === "file:" && embeddedMarkdown && embeddedMarkdown.trim()) {
-    markdownRoot.innerHTML = renderMarkdown(embeddedMarkdown);
-    refreshAnimations();
+  function renderEmbeddedFallback(extraMessage) {
+    if (embeddedMarkdown && embeddedMarkdown.trim()) {
+      renderMarkdownWithNotice(
+        embeddedMarkdown,
+        localNotice(
+          extraMessage || "Showing embedded fallback content. To preview the real <code>content.md</code> file locally, choose this project folder once.",
+          canUseFileSystemAccess() ? "Load Real content.md" : ""
+        )
+      );
+      return true;
+    }
+
+    return false;
+  }
+
+  function attachLocalLoadHandler() {
+    var button = root.querySelector("[data-load-local-markdown]");
+
+    if (!button) {
+      return;
+    }
+
+    button.addEventListener("click", function () {
+      chooseLocalProjectFolder()
+        .then(function (handle) {
+          return loadMarkdownFromDirectoryHandle(handle);
+        })
+        .then(function (markdown) {
+          renderMarkdownWithNotice(
+            markdown,
+            localNotice("Loaded directly from <code>content.md</code> in your local project folder.", "Reload from Folder")
+          );
+          attachLocalLoadHandler();
+        })
+        .catch(function () {
+          renderEmbeddedFallback("Could not load <code>content.md</code> from the selected folder.");
+          attachLocalLoadHandler();
+        });
+    });
+  }
+
+  if (window.location.protocol === "file:") {
+    loadSavedDirectoryHandle()
+      .then(function (handle) {
+        if (!handle) {
+          if (!renderEmbeddedFallback()) {
+            markdownRoot.innerHTML = localNotice(
+              "This browser cannot directly read <code>content.md</code> from disk without permission.",
+              canUseFileSystemAccess() ? "Choose Project Folder" : ""
+            );
+            refreshAnimations();
+          }
+          attachLocalLoadHandler();
+          return null;
+        }
+
+        return loadMarkdownFromDirectoryHandle(handle)
+          .then(function (markdown) {
+            renderMarkdownWithNotice(
+              markdown,
+              localNotice("Loaded directly from <code>content.md</code> in your local project folder.", "Reload from Folder")
+            );
+            attachLocalLoadHandler();
+            return null;
+          })
+          .catch(function () {
+            if (!renderEmbeddedFallback("Could not access the saved local folder handle for <code>content.md</code>.")) {
+              markdownRoot.innerHTML = localNotice(
+                "Could not access <code>content.md</code> from the saved folder.",
+                canUseFileSystemAccess() ? "Choose Project Folder" : ""
+              );
+              refreshAnimations();
+            }
+            attachLocalLoadHandler();
+            return null;
+          });
+      });
     return;
   }
 
@@ -310,16 +596,14 @@
       return response.text();
     })
     .then(function (markdown) {
-      markdownRoot.innerHTML = renderMarkdown(markdown);
-      refreshAnimations();
+      renderMarkdownWithNotice(markdown, "");
     })
     .catch(function () {
-      if (embeddedMarkdown && embeddedMarkdown.trim()) {
-        markdownRoot.innerHTML = renderMarkdown(embeddedMarkdown);
-      } else {
+      if (!renderEmbeddedFallback("Could not load <code>content.md</code> through the current page context.")) {
         markdownRoot.innerHTML =
-          '<div class="project-empty">Project content could not be loaded. Add embedded Markdown to this page or provide a readable <code>content.md</code> file through a web server.</div>';
+          '<div class="project-empty">Project content could not be loaded. Provide a readable <code>content.md</code> file or reopen this page through a normal web server.</div>';
+        refreshAnimations();
       }
-      refreshAnimations();
+      attachLocalLoadHandler();
     });
 })();

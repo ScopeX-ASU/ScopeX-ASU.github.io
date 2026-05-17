@@ -132,6 +132,17 @@
   color: #2f2f2f;
 }
 
+.project-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.project-section-header h2 {
+  margin-bottom: 0;
+}
+
 .projects-filter-group p {
   margin-bottom: 12px;
 }
@@ -352,6 +363,27 @@
   font-size: 0.95rem;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.project-copy-button {
+  padding: 8px 14px;
+  border: 1px solid rgba(140, 29, 64, 0.18);
+  border-radius: 999px;
+  background: #fff7fa;
+  color: #8c1d40;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.project-copy-button:hover,
+.project-copy-button:focus {
+  background: #fff0f5;
+  border-color: rgba(140, 29, 64, 0.32);
+  outline: none;
+  transform: translateY(-1px);
 }
 
 .project-markdown h1,
