@@ -17,7 +17,7 @@
       { name: "Jiaqi Gu", url: "../../index.html" }
     ],
     affiliations: ["Arizona State University"],
-    image: "./assets/cover.svg",
+    image: "./assets/cover.jpg",
     contentFile: "./content.md",
     links: {
       paper: "https://arxiv.org/abs/2505.17239",

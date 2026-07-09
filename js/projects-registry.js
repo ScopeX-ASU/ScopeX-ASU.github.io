@@ -3,7 +3,7 @@
   window.scopexProjectsRegistry = [
     {
       slug: "lidar-2-0",
-      title: "LiDAR 2.0",
+      title: "LiDAR 2.0: Hierarchical Curvy Waveguide Detailed Routing for Large-Scale Photonic Integrated Circuits",
       venue: "IEEE TCAD 2025",
       venueShort: "TCAD 2025",
       categories: ["Electronic-Photonic Design Automation (EPDA)"],
@@ -19,7 +19,7 @@
         { name: "Joaquin Matres" },
         { name: "Jiaqi Gu", url: "../index.html" }
       ],
-      image: "./lidar-2-0/assets/cover.svg",
+      image: "./lidar-2-0/assets/cover.jpg",
       cardAbstract:
         "An EPDA routing framework for large-scale photonic integrated circuits that emphasizes scalability, layout quality, and manufacturable curved-waveguide routing.",
       url: "./lidar-2-0/index.html"
