@@ -47,5 +47,26 @@
         "AI-assisted Photonic Device Inverse Design Framework.",
       url: "./maps/index.html"
     },
+    {
+      slug: "simphony",
+      title: "SimPhony: A Device-Circuit-Architecture Cross-Layer Modeling and Simulation Framework for Heterogeneous Electronic-Photonic AI Systems",
+      venue: "ACM/IEEE DAC 2025",
+      venueShort: "DAC 2025",
+      categories: ["Electronic-Photonic Design Automation (EPDA)"],
+      topics: ["Cross-layer Co-Design", "EPIC", "AI Systems"],
+      techniques: ["Cross-layer Co-Design", "EPIC", "AI Systems"],
+      authors: [
+        { name: "Ziang Yin", url: "../../index.html" },
+        { name: "Meng Zhang" },
+        { name: "Amir Begovic" },
+        { name: "Rena Huang" },
+        { name: "Jeff Zhang" },
+        { name: "Jiaqi Gu", url: "../../index.html" }
+      ],
+      image: "./simphony/assets/cover.png",
+      cardAbstract:
+        "A cross-layer modeling and simulation framework for heterogeneous electronic-photonic AI systems.",
+      url: "./simphony/index.html"
+    }
   ];
 })();
