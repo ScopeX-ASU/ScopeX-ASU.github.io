@@ -22,7 +22,7 @@
     links: {
       paper: "https://arxiv.org/abs/2505.17239",
       pdf: "../../files/publications/PD_TCAD2025_LiDARv2.pdf",
-      code: "https://github.com/ScopeX-ASU"
+      code: "https://github.com/ScopeX-ASU/LiDAR"
     },
     videoEmbed: "",
     citation: "@article{zhou2025lidar20,\n  title={LiDAR 2.0: Hierarchical Curvy Waveguide Detailed Routing for Large-Scale Photonic Integrated Circuits},\n  author={Zhou, Hongjian and Yang, Haoyu and Yin, Ziang and Gangi, Nicholas and Huang, Zhaoran and Ren, Haoxing and Matres, Joaquin and Gu, Jiaqi},\n  journal={IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems},\n  year={2025}\n}",

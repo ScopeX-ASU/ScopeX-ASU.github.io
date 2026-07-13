@@ -20,7 +20,7 @@
     links: {
       paper: "https://arxiv.org/abs/2411.13715",
       pdf: "../../files/publications/ONN_DAC2025_Gu_SimPhony.pdf",
-      code: "https://github.com/ScopeX-ASU"
+      code: "https://github.com/ScopeX-ASU/SimPhony"
     },
     videoEmbed: "",
     citation: "@inproceedings{yin2025simphony,\n  title={SimPhony: A Device-Circuit-Architecture Cross-Layer Modeling and Simulation Framework for Heterogeneous Electronic-Photonic AI Systems},\n  author={Ziang Yin and Meng Zhang and Amir Begovic and Rena Huang and Jeff Zhang and Jiaqi Gu},\n  booktitle={ACM/IEEE Design Automation Conference (DAC)},\n  year={2025},\n  url={https://arxiv.org/abs/2411.13715}\n}",

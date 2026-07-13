@@ -22,7 +22,7 @@
     links: {
       paper: "https://arxiv.org/abs/2503.01046",
       pdf: "../../files/publications/ONN_DATE2025_Gu2.pdf",
-      code: "https://github.com/ScopeX-ASU"
+      code: "https://github.com/ScopeX-ASU/MAPS"
     },
     videoEmbed: "",
     citation: "@inproceedings{ma2025maps,\n  title={MAPS: Multi-Fidelity AI-Augmented Photonic Simulation and Inverse Design Infrastructure},\n  author={Pingchuan Ma and Zhengqi Gao and Meng Zhang and Haoyu Yang and Mark Ren and Rena Huang and Duane S. Boning and Jiaqi Gu},\n  booktitle={Design, Automation and Test in Europe Conference (DATE)},\n  year={2025},\n  url={https://arxiv.org/abs/2503.01046}\n}",
