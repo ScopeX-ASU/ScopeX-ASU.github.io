@@ -2,6 +2,27 @@
   // Keep the catalog small. Each project owns its detailed content under /projects/<slug>/.
   window.scopexProjectsRegistry = [
     {
+      slug: "prism",
+      title: "PRISM: Photonics-Informed Inverse Lithography for Manufacturable Inverse-Designed Photonic Integrated Circuits",
+      venue: "ACM TODAES 2026",
+      venueShort: "TODAES 2026",
+      categories: ["Electronic-Photonic Design Automation (EPDA)"],
+      topics: ["Inverse Design", "AI for Optics", "DFM"],
+      techniques: ["ILT", "Inverse Design"],
+      authors: [
+        { name: "Hongjian Zhou", url: "../group.html" },
+        { name: "Haoyu Yang" },
+        { name: "Nicholas Gangi" },
+        { name: "Tianle Xu" },
+        { name: "Zhaoran Huang" },
+        { name: "Jiaqi Gu", url: "../group.html" }
+      ],
+      image: "./prism/assets/cover.png",
+      cardAbstract:
+        "A photonics-informed inverse lithography framework for manufacturable inverse-designed photonic integrated circuits.",
+      url: "./prism/index.html"
+    },
+    {
       slug: "lidar-2-0",
       title: "LiDAR 2.0: Hierarchical Curvy Waveguide Detailed Routing for Large-Scale Photonic Integrated Circuits",
       venue: "IEEE TCAD 2025",
