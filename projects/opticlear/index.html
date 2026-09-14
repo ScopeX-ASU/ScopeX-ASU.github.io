@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>OptiClear | ScopeX @ ASU</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=B612+Mono|Cabin:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../fonts/icomoon/style.css">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/projects.css">
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.ico" />
+</head>
+<body data-spy="scroll" data-target=".site-navbar-target" data-offset="300">
+    <div class="site-wrap">
+        <div class="header-top">
+            <div class="container" style="padding:20px">
+                <div class="row align-items-center">
+                    <img src="../../logo.png" width="25%">
+                    <a class="ml-auto site-logo">
+                        <b style="color: rgb(71, 71, 71)">C</b>o-design, Aut<b style="color: rgb(71, 71, 71)">o</b>mation, and O<b style="color: rgb(71, 71, 71)">p</b>timization across<br><b style="color: rgb(71, 71, 71)">S</b>ystem, Technology, and Int<b style="color: rgb(71, 71, 71)">e</b>lligence @ ASU
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="site-navbar py-2 js-sticky-header site-navbar-target d-none pl-0 d-lg-block" role="banner">
+            <div class="container">
+                <div class="d-flex align-items-right">
+                    <div class="ml-auto">
+                        <nav class="site-navigation position-relative text-right" role="navigation">
+                            <ul class="site-menu main-menu js-clone-nav mr-auto d-none pl-0 d-lg-block">
+                                <li><a href="../../index.html" class="nav-link text-right">Home</a></li>
+                                <li><a href="../../research.html" class="nav-link text-left">Research</a></li>
+                                <li class="active"><a href="../index.html" class="nav-link text-left">Projects</a></li>
+                                <li><a href="../../publication.html" class="nav-link text-left">Publication</a></li>
+                                <li><a href="../../teaching.html" class="nav-link text-left">Teaching</a></li>
+                                <li><a href="../../group.html" class="nav-link text-left">Group</a></li>
+                                <li><a href="../../resource.html" class="nav-link text-left">Resource</a></li>
+                                <li><a href="../../prospective_students.html" class="nav-link text-left">Opening</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <main id="project-detail-page"></main>
+        <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="copyright">
+                            <p>Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | Built upon <a href="https://colorlib.com" target="_blank">Colorlib</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/plain" data-project-markdown-source>
+# OptiClear: Differentiable Curvilinear Design Rule Legalization for Inverse-Designed Photonic Devices
+
+An EPDA legalization framework for converting high-performance inverse-designed photonic layouts into curvilinear, design-rule-compliant, tape-out-ready devices.
+
+Note
+
+OptiClear addresses the missing post-design stage between photonic inverse design and foundry manufacturing. It is designed for layouts whose freeform geometries, narrow gaps, irregular notches, and dense subwavelength features make conventional electronic legalization assumptions ineffective.
+
+The Design-to-Manufacturing Gap in Photonic Inverse Design
+
+Photonic inverse design gives designers a much larger search space than conventional parameterized device design. By optimizing the material distribution directly, it can discover compact components with highly non-intuitive geometries and excellent simulated optical performance. The same freedom that makes these devices powerful, however, also makes them difficult to manufacture.
+
+Inverse-designed masks often contain narrow features, irregular boundaries, small-angle corners, and tightly coupled width and spacing relationships. These structures can violate foundry rules even when a fabrication-aware inverse-design method has already applied soft minimum-feature-size or curvature penalties. A layout that looks physically reasonable in simulation may still fail design-rule checking after polygonization, creating risks for yield, optical performance, and tape-out.
+
+Electronic design-rule legalization methods are not a direct solution. They are usually built around rectilinear Manhattan layouts, edge pushing, shape snapping, and local polygon edits. Photonic inverse-designed devices are strongly curvilinear and optically sensitive, so a local geometric repair can easily create a new violation or damage a functionally important region.
+
+OptiClear was developed to make this post-design legalization problem explicit.
+
+The Core Idea: Legalize the Mask in the Pixel Domain
+
+OptiClear represents the device as a binary or grayscale mask and performs legalization before the mask is converted into GDS polygons. This keeps the repair process close to the representation naturally produced by level-set and topology-optimization methods, while avoiding repeated polygonization and simplification errors during intermediate updates.
+
+The framework uses mathematical morphology as the foundation for curvilinear rule checking and repair. Morphological opening removes weak or undersized foreground structures, while closing fills narrow gaps and small holes. The target kernel size is derived from the minimum width and spacing rules, the angle-dependent behavior of curvilinear edge pairs, and a safety margin for mask-to-polygon conversion.
+
+This leads to a useful legality condition: a legal mask should be stable under both opening and closing. In other words, applying the two operations should no longer change the layout in conflicting ways. OptiClear turns this morphological stationarity idea into two complementary legalization engines.
+
+![Curvilinear morphology and kernel-size derivation](./assets/morphology.png)
+
+*OptiClear derives a morphology kernel from curvilinear edge spacing, rule angles, and polygonization error.*
+
+OptiClear-R: Efficient Rule-Based Legalization
+
+OptiClear-R is a rule-based legalizer for efficient conflict resolution. It begins with small-kernel preprocessing to remove trivial islands and holes, then identifies the foreground and background regions where opening and closing compete.
+
+For the foreground, OptiClear-R extracts a skeleton and dilates along it so that thin bridges and weak silicon connections can survive the target opening operation. For the background, it widens narrow gaps and disconnects fragile necks to resolve spacing conflicts. Opening and closing are reapplied after each update, and the procedure continues until the two operations reach a consistent stationary state.
+
+The legalizer prioritizes the high-refractive-index silicon foreground when foreground and background updates compete for the same area. This choice reflects the optical role of the device core: unnecessary changes to silicon can affect mode confinement, scattering, reflection, and radiation more severely than changes in less active surrounding regions.
+
+![OptiClear-R workflow](./assets/opticlear-r.png)
+
+*OptiClear-R resolves foreground and background conflict regions through iterative morphology-guided updates.*
+
+OptiClear-D: Differentiable Minimum-Distortion Legalization
+
+OptiClear-R is efficient, but a conservative morphology kernel can correct more geometry than a particular device needs. Because inverse-designed photonic devices can be highly sensitive to local perturbations, OptiClear also provides a differentiable path that explicitly minimizes distortion from the original high-performance mask.
+
+OptiClear-D formulates legalization as a constrained optimization problem. It searches for a mask close to the original design while requiring the opened and closed masks to agree. The mask is parameterized through a level-set representation with a differentiable binarization function, and an augmented Lagrangian method enforces the morphological stationary-point constraint during optimization.
+
+This formulation changes the objective from “repair every violation with a fixed geometric operation” to “find the least-distorting mask that is rule-compliant.” It allows the legalizer to choose whether a local conflict is better resolved by opening a gap, merging nearby silicon, or making another small change that preserves the device’s optically important structure.
+
+![OptiClear-D optimization flow](./assets/opticlear-d.png)
+
+*OptiClear-D optimizes a latent level-set representation toward a legal mask while minimizing distortion from the original design.*
+
+Differentiable Morphology at High Resolution
+
+Differentiable opening and closing are evaluated repeatedly inside OptiClear-D, so the morphology operators can become the computational bottleneck for large masks and large structuring elements. Dense neighborhood expansion is especially expensive because the intermediate tensor grows with both mask resolution and kernel area.
+
+OptiClear addresses this problem with customized Triton-based GPU operators. Rather than materializing every local neighborhood, the implementation traverses active kernel offsets and performs fused min/max reductions on the fly. The forward pass stores the winning offset needed for exact hard-morphology backpropagation, avoiding the memory overhead of expanded neighborhood tensors.
+
+The resulting operators make high-resolution legalization practical. On the reported benchmarks, the customized implementation provides roughly 450× speedup and 280× lower memory consumption than the compared third-party differentiable morphology implementation, while avoiding out-of-memory behavior for large masks and kernels.
+
+![Triton morphology performance](./assets/performance.png)
+
+*The customized GPU morphology operators improve runtime and memory scaling for large kernels.*
+
+What the Evaluation Shows
+
+OptiClear was evaluated on diverse inverse-designed photonic devices, including bends, crossings, optical diodes, 1×3 splitters, mode-division multiplexers, wavelength-division multiplexers, and thermally tunable switches. The experiments use high-resolution masks and evaluate both geometry preservation and post-legalization optical functionality through full-wave simulation.
+
+Under the primary 70 nm minimum-width and minimum-spacing rules, both OptiClear-R and OptiClear-D reduce the number of true design-rule violations to zero across the evaluated devices. This is the central distinction from soft gap and curvature penalties: regularization can discourage problematic features, but explicit legalization is required to guarantee a rule-clean result.
+
+The two engines provide a practical efficiency–fidelity tradeoff. OptiClear-R reaches legal layouts faster through iterative rule-based morphology updates. OptiClear-D takes longer because it performs differentiable optimization, but it generally preserves optical functionality more faithfully, especially for larger or more performance-sensitive devices.
+
+![OptiClear legalization results](./assets/results.png)
+
+*OptiClear-D removes the true DRVs while preserving the optical response and mask similarity of the original design.*
+
+![Table 1 true-DRV comparison](./assets/opticlear-drv-comparison.png)
+
+*Table 1 comparison of true design-rule violations (#DRV); lower is better.*
+
+The study also shows that global geometry metrics alone are not enough to predict optical quality. A layout with high intersection-over-union can still lose functionality if the change occurs near a critical port or interference region. Distortion-aware optimization is therefore valuable because it focuses the repair process on preserving the parts of the mask that matter most to the device response.
+
+Design Rules, Resolution, and Upstream Manufacturability
+
+OptiClear remains effective across a range of width and spacing rules, although stricter rules require larger geometric corrections and can cause greater optical degradation. Full-resolution masks are important: downsampled masks in the reported study leave residual violations, while 1 nm-per-pixel processing produces rule-clean layouts.
+
+OptiClear is complementary to fabrication-aware inverse design. Stronger minimum-feature-size control can reduce the amount of correction needed later, but it does not remove the need for an explicit post-design legalization stage. The best workflow is to use manufacturability-aware regularization during inverse design and then apply OptiClear to enforce the final curvilinear rules on the actual layout mask.
+
+The current evaluation focuses primarily on minimum width and spacing rules. Minimum-area, enclosure, and other layer-interaction rules remain outside the scope of this release, leaving room for future extensions to broader foundry rule decks.
+
+Toward Design-Rule-Aware Photonic Design Automation
+
+OptiClear adds a practical legalization stage to the EPDA flow for inverse-designed photonic devices. It connects the freedom of inverse design with the discipline required by manufacturing, while making the tradeoff between runtime, geometry distortion, and optical fidelity explicit.
+
+Beyond post-design repair, the differentiable formulation opens a path toward end-to-end design-rule-aware inverse design. Future flows could incorporate morphological stationarity, foundry-specific rules, optical sensitivity, and fabrication models directly into a unified optimization loop. In that setting, legalization would not be an afterthought, but a first-class component of photonic design automation.
+
+Citation
+
+If OptiClear is useful in your work, please cite:
+
+```text
+@inproceedings{zhou2027opticlear,
+  title={OptiClear: Differentiable Curvilinear Design Rule Legalization for Inverse-Designed Photonic Devices},
+  author={Zhou, Hongjian and Yang, Haoyu and Gangi, Nicholas and Huang, Zhaoran and Gu, Jiaqi},
+  booktitle={IEEE/ACM Asia and South Pacific Design Automation Conference (ASP-DAC)},
+  year={2027},
+  url={https://arxiv.org/abs/2607.03632}
+}
+```
+# OptiClear: Differentiable Curvilinear Design Rule Legalization for Inverse-Designed Photonic Devices
+
+An EPDA legalization framework for converting high-performance inverse-designed photonic layouts into curvilinear, design-rule-compliant, tape-out-ready devices.
+
+Note
+
+OptiClear addresses the missing post-design stage between photonic inverse design and foundry manufacturing. It is designed for layouts whose freeform geometries, narrow gaps, irregular notches, and dense subwavelength features make conventional electronic legalization assumptions ineffective.
+
+The Design-to-Manufacturing Gap in Photonic Inverse Design
+
+Photonic inverse design gives designers a much larger search space than conventional parameterized device design. By optimizing the material distribution directly, it can discover compact components with highly non-intuitive geometries and excellent simulated optical performance. The same freedom that makes these devices powerful, however, also makes them difficult to manufacture.
+
+Inverse-designed masks often contain narrow features, irregular boundaries, small-angle corners, and tightly coupled width and spacing relationships. These structures can violate foundry rules even when a fabrication-aware inverse-design method has already applied soft minimum-feature-size or curvature penalties. A layout that looks physically reasonable in simulation may still fail design-rule checking after polygonization, creating risks for yield, optical performance, and tape-out.
+
+Electronic design-rule legalization methods are not a direct solution. They are usually built around rectilinear Manhattan layouts, edge pushing, shape snapping, and local polygon edits. Photonic inverse-designed devices are strongly curvilinear and optically sensitive, so a local geometric repair can easily create a new violation or damage a functionally important region.
+
+OptiClear was developed to make this post-design legalization problem explicit.
+
+The Core Idea: Legalize the Mask in the Pixel Domain
+
+OptiClear represents the device as a binary or grayscale mask and performs legalization before the mask is converted into GDS polygons. This keeps the repair process close to the representation naturally produced by level-set and topology-optimization methods, while avoiding repeated polygonization and simplification errors during intermediate updates.
+
+The framework uses mathematical morphology as the foundation for curvilinear rule checking and repair. Morphological opening removes weak or undersized foreground structures, while closing fills narrow gaps and small holes. The target kernel size is derived from the minimum width and spacing rules, the angle-dependent behavior of curvilinear edge pairs, and a safety margin for mask-to-polygon conversion.
+
+This leads to a useful legality condition: a legal mask should be stable under both opening and closing. In other words, applying the two operations should no longer change the layout in conflicting ways. OptiClear turns this morphological stationarity idea into two complementary legalization engines.
+
+OptiClear-R: Efficient Rule-Based Legalization
+
+OptiClear-R is a rule-based legalizer for efficient conflict resolution. It begins with small-kernel preprocessing to remove trivial islands and holes, then identifies the foreground and background regions where opening and closing compete.
+
+For the foreground, OptiClear-R extracts a skeleton and dilates along it so that thin bridges and weak silicon connections can survive the target opening operation. For the background, it widens narrow gaps and disconnects fragile necks to resolve spacing conflicts. Opening and closing are reapplied after each update, and the procedure continues until the two operations reach a consistent stationary state.
+
+The legalizer prioritizes the high-refractive-index silicon foreground when foreground and background updates compete for the same area. This choice reflects the optical role of the device core: unnecessary changes to silicon can affect mode confinement, scattering, reflection, and radiation more severely than changes in less active surrounding regions.
+
+OptiClear-D: Differentiable Minimum-Distortion Legalization
+
+OptiClear-R is efficient, but a conservative morphology kernel can correct more geometry than a particular device needs. Because inverse-designed photonic devices can be highly sensitive to local perturbations, OptiClear also provides a differentiable path that explicitly minimizes distortion from the original high-performance mask.
+
+OptiClear-D formulates legalization as a constrained optimization problem. It searches for a mask close to the original design while requiring the opened and closed masks to agree. The mask is parameterized through a level-set representation with a differentiable binarization function, and an augmented Lagrangian method enforces the morphological stationary-point constraint during optimization.
+
+This formulation changes the objective from “repair every violation with a fixed geometric operation” to “find the least-distorting mask that is rule-compliant.” It allows the legalizer to choose whether a local conflict is better resolved by opening a gap, merging nearby silicon, or making another small change that preserves the device’s optically important structure.
+
+Differentiable Morphology at High Resolution
+
+Differentiable opening and closing are evaluated repeatedly inside OptiClear-D, so the morphology operators can become the computational bottleneck for large masks and large structuring elements. Dense neighborhood expansion is especially expensive because the intermediate tensor grows with both mask resolution and kernel area.
+
+OptiClear addresses this problem with customized Triton-based GPU operators. Rather than materializing every local neighborhood, the implementation traverses active kernel offsets and performs fused min/max reductions on the fly. The forward pass stores the winning offset needed for exact hard-morphology backpropagation, avoiding the memory overhead of expanded neighborhood tensors.
+
+The resulting operators make high-resolution legalization practical. On the reported benchmarks, the customized implementation provides roughly 450× speedup and 280× lower memory consumption than the compared third-party differentiable morphology implementation, while avoiding out-of-memory behavior for large masks and kernels.
+
+What the Evaluation Shows
+
+OptiClear was evaluated on diverse inverse-designed photonic devices, including bends, crossings, optical diodes, 1×3 splitters, mode-division multiplexers, wavelength-division multiplexers, and thermally tunable switches. The experiments use high-resolution masks and evaluate both geometry preservation and post-legalization optical functionality through full-wave simulation.
+
+Under the primary 70 nm minimum-width and minimum-spacing rules, both OptiClear-R and OptiClear-D reduce the number of true design-rule violations to zero across the evaluated devices. This is the central distinction from soft gap and curvature penalties: regularization can discourage problematic features, but explicit legalization is required to guarantee a rule-clean result.
+
+The two engines provide a practical efficiency–fidelity tradeoff. OptiClear-R reaches legal layouts faster through iterative rule-based morphology updates. OptiClear-D takes longer because it performs differentiable optimization, but it generally preserves optical functionality more faithfully, especially for larger or more performance-sensitive devices.
+
+The study also shows that global geometry metrics alone are not enough to predict optical quality. A layout with high intersection-over-union can still lose functionality if the change occurs near a critical port or interference region. Distortion-aware optimization is therefore valuable because it focuses the repair process on preserving the parts of the mask that matter most to the device response.
+
+Design Rules, Resolution, and Upstream Manufacturability
+
+OptiClear remains effective across a range of width and spacing rules, although stricter rules require larger geometric corrections and can cause greater optical degradation. Full-resolution masks are important: downsampled masks in the reported study leave residual violations, while 1 nm-per-pixel processing produces rule-clean layouts.
+
+OptiClear is complementary to fabrication-aware inverse design. Stronger minimum-feature-size control can reduce the amount of correction needed later, but it does not remove the need for an explicit post-design legalization stage. The best workflow is to use manufacturability-aware regularization during inverse design and then apply OptiClear to enforce the final curvilinear rules on the actual layout mask.
+
+The current evaluation focuses primarily on minimum width and spacing rules. Minimum-area, enclosure, and other layer-interaction rules remain outside the scope of this release, leaving room for future extensions to broader foundry rule decks.
+
+Toward Design-Rule-Aware Photonic Design Automation
+
+OptiClear adds a practical legalization stage to the EPDA flow for inverse-designed photonic devices. It connects the freedom of inverse design with the discipline required by manufacturing, while making the tradeoff between runtime, geometry distortion, and optical fidelity explicit.
+
+Beyond post-design repair, the differentiable formulation opens a path toward end-to-end design-rule-aware inverse design. Future flows could incorporate morphological stationarity, foundry-specific rules, optical sensitivity, and fabrication models directly into a unified optimization loop. In that setting, legalization would not be an afterthought, but a first-class component of photonic design automation.
+
+Citation
+
+If OptiClear is useful in your work, please cite:
+
+```text
+@inproceedings{zhou2027opticlear,
+  title={OptiClear: Differentiable Curvilinear Design Rule Legalization for Inverse-Designed Photonic Devices},
+  author={Zhou, Hongjian and Yang, Haoyu and Gangi, Nicholas and Huang, Zhaoran and Gu, Jiaqi},
+  booktitle={IEEE/ACM Asia and South Pacific Design Automation Conference (ASP-DAC)},
+  year={2027},
+  url={https://arxiv.org/abs/2607.03632}
+}
+```
+    </script>
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+    <script src="../../js/jquery-migrate-3.0.1.min.js"></script>
+    <script src="../../js/jquery-ui.js"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/owl.carousel.min.js"></script>
+    <script src="../../js/jquery.stellar.min.js"></script>
+    <script src="../../js/jquery.countdown.min.js"></script>
+    <script src="../../js/bootstrap-datepicker.min.js"></script>
+    <script src="../../js/jquery.easing.1.3.js"></script>
+    <script src="../../js/aos.js"></script>
+    <script src="../../js/jquery.fancybox.min.js"></script>
+    <script src="../../js/jquery.sticky.js"></script>
+    <script src="../../js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../../js/main.js"></script>
+    <script src="./project.js"></script>
+    <script src="../../js/project-detail-renderer.js"></script>
+</body>
+</html>

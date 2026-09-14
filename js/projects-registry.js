@@ -23,6 +23,26 @@
       url: "./prism/index.html"
     },
     {
+      slug: "opticlear",
+      title: "OptiClear: Differentiable Curvilinear Design Rule Legalization for Inverse-Designed Photonic Devices",
+      venue: "ASP-DAC 2027",
+      venueShort: "ASP-DAC 2027",
+      categories: ["Electronic-Photonic Design Automation (EPDA)"],
+      topics: ["Inverse Design", "Photonic Layout", "Manufacturing-Aware Design"],
+      techniques: ["Design Rule Legalization", "Differentiable Optimization", "Morphological Processing"],
+      authors: [
+        { name: "Hongjian Zhou", url: "../group.html" },
+        { name: "Haoyu Yang" },
+        { name: "Nicholas Gangi" },
+        { name: "Zhaoran Huang" },
+        { name: "Jiaqi Gu", url: "../index.html" }
+      ],
+      image: "./opticlear/assets/cover.svg",
+      cardAbstract:
+        "A curvilinear design-rule legalization framework that combines efficient morphology with differentiable minimum-distortion optimization for inverse-designed photonic devices.",
+      url: "./opticlear/index.html"
+    },
+    {
       slug: "lidar-2-0",
       title: "LiDAR 2.0: Hierarchical Curvy Waveguide Detailed Routing for Large-Scale Photonic Integrated Circuits",
       venue: "IEEE TCAD 2025",
