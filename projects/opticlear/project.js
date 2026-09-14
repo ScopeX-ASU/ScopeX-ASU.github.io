@@ -1,3 +1,9 @@
+/*
+ * @Date: 2026-09-14 15:06:34
+ * @LastEditors: Jiaqi Gu && jqgu1996@163.com
+ * @LastEditTime: 2026-09-14 15:14:53
+ * @FilePath: /ScopeX-ASU.github.io/projects/opticlear/project.js
+ */
 (function () {
   window.scopexProjectPage = {
     title: "OptiClear: Differentiable Curvilinear Design Rule Legalization for Inverse-Designed Photonic Devices",
@@ -18,7 +24,7 @@
       "Rensselaer Polytechnic Institute",
       "NVIDIA Corporation"
     ],
-    image: "./assets/cover.svg",
+    image: "./assets/cover.png",
     contentFile: "./content.md",
     links: {
       paper: "https://arxiv.org/abs/2607.03632"

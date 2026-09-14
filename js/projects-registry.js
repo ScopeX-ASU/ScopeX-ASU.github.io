@@ -37,7 +37,7 @@
         { name: "Zhaoran Huang" },
         { name: "Jiaqi Gu", url: "../index.html" }
       ],
-      image: "./opticlear/assets/cover.svg",
+      image: "./opticlear/assets/cover.png",
       cardAbstract:
         "A curvilinear design-rule legalization framework that combines efficient morphology with differentiable minimum-distortion optimization for inverse-designed photonic devices.",
       url: "./opticlear/index.html"
